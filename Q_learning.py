@@ -37,6 +37,8 @@ if __name__ == "__main__":
 
     #Q_table = np.zeros([env.observation_space.n, env.action_space.n])
 
+    #print(Q_table1)
+
     episode_reward_record = deque(maxlen=100)
 
 
@@ -58,9 +60,17 @@ if __name__ == "__main__":
             # Take action
             next_state, reward, done, info = env.step(action)
 
+            #print(Q_table)
             if done == False:
-                q_value = Q_table[state, action]
-                max_value = np.max(Q_table[next_state])
+                if len(Q_table) == 0:
+                    q_value = Q_table[0]
+                else:
+                    q_value = Q_table[state, action]
+
+                max_value = np.max(np.array([Q_table[(next_state, i)] for i in range(env.action_space.n)]))
+
+                #print(Q_table[next_state])
+                #print(Q_table)
 
 
                 # print(Q_table[next_state])
