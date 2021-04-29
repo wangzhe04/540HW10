@@ -37,13 +37,13 @@ if __name__ == "__main__":
     episode_reward_record = deque(maxlen=100)
 
     for i in range(EPISODES):
-        # episode_reward = 0
+        episode_reward = 0
         done = False
         state = env.reset()
         reward = 0
         previous_reward = 0
 
-        # TODO PERFORM Q LEARNING
+        # TODO PERFORM SARSA LEARNING
 
         while not done:
             if random.uniform(0, 1) < EPSILON:
@@ -54,12 +54,11 @@ if __name__ == "__main__":
 
             # Take action
             next_state, reward, done, info = env.step(action)
+            episode_reward += reward
 
             next_state1 = next_state
 
             sarsa_action = np.argmax(np.array([Q_table[(next_state1, i)] for i in range(env.action_space.n)]))
-
-            # print(Q_table)
 
 
             q_value = Q_table[state, action]
@@ -74,19 +73,17 @@ if __name__ == "__main__":
             action = sarsa_action
 
             if done:
-                q_value = Q_table[state, action]
 
-                next_value = Q_table[(next_state, sarsa_action)]
+                q_value = Q_table[(state, action)]
 
-                new_q_value = next_value + LEARNING_RATE * (reward - next_value)
+                new_q_value1 = q_value + LEARNING_RATE * (reward - q_value)
 
-                Q_table[state, action] = new_q_value
+                Q_table[state, action] = new_q_value1
 
-                state = next_state
-                action = sarsa_action
 
-        previous_reward = reward
-        episode_reward_record.append(reward)
+
+            previous_reward = reward
+        episode_reward_record.append(episode_reward)
         EPSILON = EPSILON * EPSILON_DECAY
 
         if i%100 ==0 and i>0:

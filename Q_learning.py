@@ -43,10 +43,11 @@ if __name__ == "__main__":
 
 
     for i in range(EPISODES):
-        # episode_reward = 0
+        episode_reward = 0
         done = False
         state = env.reset()
         reward = 0
+
 
         #TODO PERFORM Q LEARNING
 
@@ -59,6 +60,8 @@ if __name__ == "__main__":
 
             # Take action
             next_state, reward, done, info = env.step(action)
+
+            episode_reward += reward
 
             #print(Q_table)
             if done == False:
@@ -76,12 +79,14 @@ if __name__ == "__main__":
             else:
                 q_value = Q_table[state, action]
 
-                new_q_value = (1 - LEARNING_RATE) * q_value + LEARNING_RATE * reward
+                new_q_value = q_value + LEARNING_RATE * (reward - q_value)
 
                 Q_table[state, action] = new_q_value
                 state = next_state
 
-        episode_reward_record.append(reward)
+
+
+        episode_reward_record.append(episode_reward)
         EPSILON = EPSILON * EPSILON_DECAY
 
 
