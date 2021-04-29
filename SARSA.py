@@ -60,30 +60,30 @@ if __name__ == "__main__":
             sarsa_action = np.argmax(np.array([Q_table[(next_state1, i)] for i in range(env.action_space.n)]))
 
             # print(Q_table)
-            if done == False:
 
+
+            q_value = Q_table[state, action]
+
+            next_value = Q_table[(next_state, sarsa_action)]
+
+            new_q_value = q_value + LEARNING_RATE * (previous_reward + DISCOUNT_FACTOR * next_value - q_value)
+
+            Q_table[state, action] = new_q_value
+
+            state = next_state
+            action = sarsa_action
+
+            if done:
                 q_value = Q_table[state, action]
 
-                max_value = Q_table[(next_state, sarsa_action)]
+                next_value = Q_table[(next_state, sarsa_action)]
 
-                #print(Q_table)
-
-                # new_q_value = (1 - LEARNING_RATE) * q_value + LEARNING_RATE * (reward + DISCOUNT_FACTOR * max_value)
-
-                new_q_value = q_value + LEARNING_RATE * (reward + DISCOUNT_FACTOR * max_value - q_value)
+                new_q_value = next_value + LEARNING_RATE * (reward - next_value)
 
                 Q_table[state, action] = new_q_value
 
                 state = next_state
                 action = sarsa_action
-
-            else:
-                q_value = Q_table[state, action]
-
-                new_q_value = (1 - LEARNING_RATE) * q_value + LEARNING_RATE * reward
-
-                Q_table[state, action] = new_q_value
-                state = next_state
 
         previous_reward = reward
         episode_reward_record.append(reward)

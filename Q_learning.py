@@ -62,25 +62,20 @@ if __name__ == "__main__":
 
             #print(Q_table)
             if done == False:
-                if len(Q_table) == 0:
-                    q_value = Q_table[0]
-                else:
-                    q_value = Q_table[state, action]
+
+                q_value = Q_table[state, action]
 
                 max_value = np.max(np.array([Q_table[(next_state, i)] for i in range(env.action_space.n)]))
 
-                #print(Q_table[next_state])
-                #print(Q_table)
 
-
-                # print(Q_table[next_state])
-                new_q_value = (1 - LEARNING_RATE) * q_value + LEARNING_RATE * (reward + DISCOUNT_FACTOR * max_value)
+                new_q_value = q_value + LEARNING_RATE * (reward + DISCOUNT_FACTOR * max_value - q_value)
 
                 Q_table[state, action] = new_q_value
                 state = next_state
+
             else:
                 q_value = Q_table[state, action]
-                max_value = np.max(Q_table[next_state])
+
                 new_q_value = (1 - LEARNING_RATE) * q_value + LEARNING_RATE * reward
 
                 Q_table[state, action] = new_q_value
@@ -88,11 +83,6 @@ if __name__ == "__main__":
 
         episode_reward_record.append(reward)
         EPSILON = EPSILON * EPSILON_DECAY
-
-
-
-
-
 
 
         total_reward += reward
